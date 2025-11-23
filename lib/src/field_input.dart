@@ -1,13 +1,14 @@
 import 'field.dart';
 
 abstract class FieldInput<T, E extends FieldInputError> extends Field<T?> {
-  const FieldInput._({required super.name, required super.value, this.isPure = true});
+  const FieldInput({required super.name, required super.value, this.isPure = true});
 
   /// Constructor which create a `pure` [FieldInput] with a given value.
-  const FieldInput.pure(String name, T value) : this._(name: name, value: value);
+  const FieldInput.pure({required String name, T? value}) : this(name: name, value: value);
 
   /// Constructor which create a `dirty` [FieldInput] with a given value.
-  const FieldInput.dirty(String name, T value) : this._(name: name, value: value, isPure: false);
+  const FieldInput.dirty({required String name, T? value})
+    : this(name: name, value: value, isPure: false);
 
   @override
   FieldInput<T, E> copyWith({T? value, bool? isPure});
@@ -53,17 +54,29 @@ abstract class FieldInput<T, E extends FieldInputError> extends Field<T?> {
 }
 
 class RequiredFieldInput<T, E extends RequiredFieldInputError> extends FieldInput<T, E> {
-  const RequiredFieldInput._({required super.name, required super.value, required super.isPure})
-    : super._();
-  const RequiredFieldInput.pure(super.name, super.value) : super.pure();
-  const RequiredFieldInput.dirty(super.name, super.value) : super.dirty();
+  const RequiredFieldInput({required super.name, required super.value, required super.isPure});
+  const RequiredFieldInput.pure({required super.name, super.value}) : super.pure();
+  const RequiredFieldInput.dirty({required super.name, super.value}) : super.dirty();
 
   @override
   FieldInput<T, E> copyWith({T? value, bool? isPure}) =>
-      RequiredFieldInput._(name: name, value: value ?? this.value, isPure: isPure ?? this.isPure);
+      RequiredFieldInput(name: name, value: value ?? this.value, isPure: isPure ?? this.isPure);
 
   @override
   E? validator(T? value) => value == null ? const RequiredFieldInputError() as E : null;
+}
+
+class OptionalFieldInput<T, E extends FieldInputError> extends FieldInput<T, E> {
+  const OptionalFieldInput({required super.name, required super.value, required super.isPure});
+  const OptionalFieldInput.pure({required super.name, super.value}) : super.pure();
+  const OptionalFieldInput.dirty({required super.name, super.value}) : super.dirty();
+
+  @override
+  FieldInput<T, E> copyWith({T? value, bool? isPure}) =>
+      OptionalFieldInput(name: name, value: value ?? this.value, isPure: isPure ?? this.isPure);
+
+  @override
+  E? validator(T? value) => null;
 }
 
 class FieldInputError {
