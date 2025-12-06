@@ -36,3 +36,27 @@ class FieldInputSet extends Equatable {
     return errors.isEmpty ? null : errors;
   }
 }
+
+class OrderedFieldInputSet extends FieldInputSet {
+  OrderedFieldInputSet(super.inputs) : fieldList = List.unmodifiable(inputs), super.fromList();
+
+  final List<FieldInput> fieldList;
+
+  @override
+  List<Object?> get props => [...super.props, fieldList];
+
+  @override
+  OrderedFieldInputSet copyWith({List<FieldInput>? inputs}) {
+    if (inputs == null || inputs.isEmpty) {
+      return this;
+    }
+    final Map<String, FieldInput> mergedInputsMap =
+        FieldSet.mergeFields(newFields: inputs, existingFields: this.inputs)
+            as Map<String, FieldInput>;
+    final List<FieldInput> mergedFieldList = [];
+    for (FieldInput input in fieldList) {
+      mergedFieldList.add(mergedInputsMap[input.name]!);
+    }
+    return OrderedFieldInputSet(mergedFieldList);
+  }
+}

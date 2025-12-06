@@ -38,7 +38,7 @@ abstract class FieldSetObject extends FieldSet {
     return object;
   }
 
-  List<String> get requiredFields;
+  List<String> get requiredFields => [];
 
   bool get isValid => validate() == null;
 

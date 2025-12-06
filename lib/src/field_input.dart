@@ -1,6 +1,6 @@
 import 'field.dart';
 
-abstract class FieldInput<T, E extends FieldInputError> extends Field<T?> {
+abstract class FieldInput<T, E> extends Field<T?> {
   const FieldInput({required super.name, required super.value, this.isPure = true});
 
   /// Constructor which create a `pure` [FieldInput] with a given value.
